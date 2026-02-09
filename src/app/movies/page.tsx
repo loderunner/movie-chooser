@@ -1,8 +1,8 @@
 export default function MoviesPage() {
   return (
-    <main className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold">My Movies</h1>
-      <p className="text-muted-foreground">Movie list coming soon...</p>
-    </main>
+      <p className="mt-2 text-muted-foreground">Your movie watchlist will appear here.</p>
+    </div>
   );
 }

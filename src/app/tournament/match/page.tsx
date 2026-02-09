@@ -1,8 +1,8 @@
 export default function MatchPage() {
   return (
-    <main className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold">Match</h1>
-      <p className="text-muted-foreground">Head-to-head matchup coming soon...</p>
-    </main>
+      <p className="mt-2 text-muted-foreground">Head-to-head matchup will appear here.</p>
+    </div>
   );
 }
