@@ -1,8 +1,26 @@
-export default function MatchPage() {
+import { redirect } from "next/navigation";
+
+import { MatchupClient } from "@/components/matchup-client";
+import { getNextMatch, getTournamentState } from "@/lib/actions";
+
+export default async function MatchPage() {
+  const state = await getTournamentState();
+
+  // No active tournament
+  if (state.tournament === null || state.tournament.status !== "active") {
+    redirect("/tournament");
+  }
+
+  const nextMatch = await getNextMatch(state.tournament.id);
+
+  // No match to play
+  if (nextMatch === null) {
+    redirect("/tournament");
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold">Match</h1>
-      <p className="mt-2 text-muted-foreground">Head-to-head matchup will appear here.</p>
+      <MatchupClient match={nextMatch} />
     </div>
   );
 }
