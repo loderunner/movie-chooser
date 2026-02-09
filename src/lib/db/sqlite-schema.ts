@@ -1,20 +1,11 @@
 import { relations } from "drizzle-orm";
-import {
-  boolean,
-  index,
-  integer,
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { index, integer, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 // Movies table
-export const movies = pgTable(
+export const movies = sqliteTable(
   "movies",
   {
-    id: serial("id").primaryKey(),
+    id: integer("id").primaryKey({ autoIncrement: true }),
     tmdbId: integer("tmdb_id").notNull(),
     title: text("title").notNull(),
     year: integer("year"),
@@ -24,8 +15,10 @@ export const movies = pgTable(
     genres: text("genres"), // comma-separated
     director: text("director"),
     cast: text("cast"), // comma-separated
-    archived: boolean("archived").default(false).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
+    archived: integer("archived", { mode: "boolean" }).default(false).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
   },
   (table) => [
     uniqueIndex("movies_tmdb_id_idx").on(table.tmdbId),
@@ -34,25 +27,27 @@ export const movies = pgTable(
 );
 
 // Tournaments table
-export const tournaments = pgTable(
+export const tournaments = sqliteTable(
   "tournaments",
   {
-    id: serial("id").primaryKey(),
+    id: integer("id").primaryKey({ autoIncrement: true }),
     status: text("status", { enum: ["active", "finished", "ended"] })
       .default("active")
       .notNull(),
     winnerMovieId: integer("winner_movie_id").references(() => movies.id),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    endedAt: timestamp("ended_at"),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .$defaultFn(() => new Date()),
+    endedAt: integer("ended_at", { mode: "timestamp" }),
   },
   (table) => [index("tournaments_status_idx").on(table.status)],
 );
 
 // Matches table
-export const matches = pgTable(
+export const matches = sqliteTable(
   "matches",
   {
-    id: serial("id").primaryKey(),
+    id: integer("id").primaryKey({ autoIncrement: true }),
     tournamentId: integer("tournament_id")
       .notNull()
       .references(() => tournaments.id, { onDelete: "cascade" }),
@@ -61,7 +56,7 @@ export const matches = pgTable(
     movie1Id: integer("movie1_id").references(() => movies.id),
     movie2Id: integer("movie2_id").references(() => movies.id),
     winnerId: integer("winner_id").references(() => movies.id),
-    playedAt: timestamp("played_at"),
+    playedAt: integer("played_at", { mode: "timestamp" }),
   },
   (table) => [index("matches_tournament_id_idx").on(table.tournamentId)],
 );

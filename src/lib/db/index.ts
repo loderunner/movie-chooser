@@ -1,8 +1,12 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import Database from "better-sqlite3";
+import { drizzle as drizzleSqlite } from "drizzle-orm/better-sqlite3";
 
-import * as schema from "./schema";
+import * as sqliteSchema from "./sqlite-schema";
 
-const databaseUrl = process.env.DATABASE_URL ?? "";
-const sql = neon(databaseUrl);
-export const db = drizzle(sql, { schema });
+// For local development, use SQLite
+// In production with DATABASE_URL, you would use Neon PostgreSQL
+const sqlite = new Database("local.db");
+export const db = drizzleSqlite(sqlite, { schema: sqliteSchema });
+
+// Re-export schema types
+export * from "./sqlite-schema";
