@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 
 import { Nav } from "@/components/nav";
+import { NavWrapper } from "@/components/nav-wrapper";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -29,7 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Nav />
+        <Suspense fallback={<Nav />}>
+          <NavWrapper />
+        </Suspense>
         <main className="min-h-[calc(100vh-4rem)] pb-20 md:pb-0">{children}</main>
         <Toaster />
       </body>
