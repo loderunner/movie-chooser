@@ -1,18 +1,14 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
+import baseConfig from "eslint-config-loderunner/base";
+import formattingConfig from "eslint-config-loderunner/formatting";
+import importConfig from "eslint-config-loderunner/import";
+import reactConfig from "eslint-config-loderunner/react";
+import typescriptConfig from "eslint-config-loderunner/typescript";
 
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
-
-export default eslintConfig;
+export default [
+  { ignores: [".next/", "node_modules/", "drizzle/", "*.config.ts", "*.config.mjs"] },
+  ...baseConfig,
+  ...typescriptConfig,
+  ...reactConfig,
+  ...importConfig,
+  ...formattingConfig, // MUST BE LAST
+];
